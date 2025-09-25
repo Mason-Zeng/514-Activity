@@ -1,3 +1,4 @@
+//To get state file
 terraform {
   backend "s3" {
     bucket         = "mason-zeng-terraform-bucket"   
