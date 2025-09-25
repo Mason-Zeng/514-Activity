@@ -71,5 +71,8 @@ jobs:
           terraform_version: 1.1.9
           terraform_wrapper: false
 
+      - name: Terraform Init
+        run: terraform init -reconfigure
+
       - name: Terraform Destroy
         run: terraform destroy -auto-approve
