@@ -1,23 +1,18 @@
 name: "Github Actions Activity"
 
-# Defines when the workflow will run
 on:
-  # Manual trigger using GitHub Actions UI
   workflow_dispatch:
     inputs:
-      # Input parameter to choose between apply or destroy actions
       action:
         description: 'Terraform Action to Perform'
         type: choice
         options:
-        - Terraform_apply
-        - Terraform_destroy
+          - Terraform_apply
+          - Terraform_destroy
 
 jobs:
-  # Job for applying Terraform configurations
   terraform_apply:
     name: "Terraform_apply"
-    # Condition to run this job only when 'Terraform_apply' is selected
     if: ${{ github.event.inputs.action == 'Terraform_apply' }}
     runs-on: ubuntu-latest
 
@@ -39,7 +34,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -reconfigure
 
       - name: Terraform Plan
         run: terraform plan
@@ -47,10 +42,8 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
-  # Job for destroying Terraform-managed infrastructure
   terraform_destroy:
     name: "Terraform_destroy"
-    # Condition to run this job only when 'Terraform_destroy' is selected
     if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
     runs-on: ubuntu-latest
 
@@ -73,6 +66,11 @@ jobs:
 
       - name: Terraform Init
         run: terraform init -reconfigure
+
+      # Import the existing EC2 instance into Terraform state
+      - name: Import Existing EC2
+        run: |
+          terraform import aws_instance.my_server i-0d8202a6b114d2ce1
 
       - name: Terraform Destroy
         run: terraform destroy -auto-approve
